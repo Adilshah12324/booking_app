@@ -1,14 +1,14 @@
 <?php
 
-namespace DTApi\Repository;
+namespace App\Repository;
 
 use DTApi\Events\SessionEnded;
 use DTApi\Helpers\SendSMSHelper;
 use Event;
 use Carbon\Carbon;
 use Monolog\Logger;
-use DTApi\Models\Job;
-use DTApi\Models\User;
+use App\Models\Job;
+use App\Models\User;
 use DTApi\Models\Language;
 use DTApi\Models\UserMeta;
 use DTApi\Helpers\TeHelper;
@@ -20,7 +20,7 @@ use DTApi\Events\JobWasCreated;
 use DTApi\Events\JobWasCanceled;
 use DTApi\Models\UsersBlacklist;
 use DTApi\Helpers\DateTimeHelper;
-use DTApi\Mailers\MailerInterface;
+use App\Mailers\MailerInterface;
 use Illuminate\Support\Facades\DB;
 use Monolog\Handler\StreamHandler;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Class BookingRepository
- * @package DTApi\Repository
+ * @package App\Repository
  */
 class BookingRepository extends BaseRepository
 {
@@ -41,10 +41,10 @@ class BookingRepository extends BaseRepository
     /**
      * @param Job $model
      */
-    function __construct(Job $model, MailerInterface $mailer)
+    function __construct(Job $model)
     {
         parent::__construct($model);
-        $this->mailer = $mailer;
+        // $this->mailer = $mailer;
         $this->logger = new Logger('admin_logger');
 
         $this->logger->pushHandler(new StreamHandler(storage_path('logs/admin/laravel-' . date('Y-m-d') . '.log'), Logger::DEBUG));
@@ -1684,7 +1684,7 @@ class BookingRepository extends BaseRepository
     {
         $requestdata = $request->all();
         $cuser = $request->__authenticatedUser;
-        $consumer_type = $cuser->consumer_type;
+        // $consumer_type = $cuser->consumer_type;
 
         if ($cuser && $cuser->user_type == env('SUPERADMIN_ROLE_ID')) {
             $allJobs = Job::query();
@@ -1815,11 +1815,11 @@ class BookingRepository extends BaseRepository
                 $requestdata = array_only($requestdata, ['id']);
             }
 
-            if ($consumer_type == 'RWS') {
-                $allJobs->where('job_type', '=', 'rws');
-            } else {
-                $allJobs->where('job_type', '=', 'unpaid');
-            }
+            // if ($consumer_type == 'RWS') {
+            //     $allJobs->where('job_type', '=', 'rws');
+            // } else {
+            //     $allJobs->where('job_type', '=', 'unpaid');
+            // }
             if (isset($requestdata['feedback']) && $requestdata['feedback'] != 'false') {
                 $allJobs->where('ignore_feedback', '0');
                 $allJobs->whereHas('feedback', function($q) {

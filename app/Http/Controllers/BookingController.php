@@ -1,12 +1,14 @@
 <?php
 
-namespace DTApi\Http\Controllers;
+namespace App\Http\Controllers;
 
-use DTApi\Models\Job;
+// use App\Models\Job;
+
+use App\Models\User;
 use DTApi\Http\Requests;
 use DTApi\Models\Distance;
 use Illuminate\Http\Request;
-use DTApi\Repository\BookingRepository;
+use App\Repository\BookingRepository;
 
 /**
  * Class BookingController
@@ -36,16 +38,14 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         if($user_id = $request->get('user_id')) {
-
             $response = $this->repository->getUsersJobs($user_id);
-
         }
         elseif($request->__authenticatedUser->user_type == env('ADMIN_ROLE_ID') || $request->__authenticatedUser->user_type == env('SUPERADMIN_ROLE_ID'))
         {
             $response = $this->repository->getAll($request);
         }
 
-        return response($response);
+        return response()->json($response);
     }
 
     /**
